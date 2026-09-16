@@ -16,7 +16,7 @@ The live dashboard is fully interactive (sortable tables, a zoomable world map, 
 CSV export); the images below are styled renders of its key sections built from the same real data
 pipeline, so you can see what's inside before opening `dashboard/index.html` yourself.
 
-<img width="521" height="311" alt="55" src="https://github.com/user-attachments/assets/8488e4dc-40fb-4f65-96b6-71752d0e3038" />
+<img width="700" height="511" alt="55" src="https://github.com/user-attachments/assets/8488e4dc-40fb-4f65-96b6-71752d0e3038" />
 
 **② Reserve history** — 26 years of world official reserves (the 2000-2008 selling era followed by
 the 2009-2026 buying era) next to the Central Bank Gold Agreement's collapsing sales figures.
