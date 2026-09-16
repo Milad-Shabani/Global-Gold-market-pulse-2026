@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Global Gold Market Pulse 2026 — World Reserves, Production &amp; Demand</title>
+<meta name="description" content="2026 edition. Which country holds the most gold? An interactive, source-cited dashboard on world official gold reserves, production, price history and demand, built on real World Gold Council / IMF IFS and USGS data." />
+<meta property="og:title" content="Global Gold Market Pulse — 2026 Edition" />
+<meta property="og:description" content="2026 edition — interactive world gold reserves, production &amp; demand dashboard, real WGC/IMF IFS &amp; USGS data." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+  :root{
+    --gold:#b8860b; --gold-dark:#8b6508; --gold-light:#f4e4bc;
+    --ink:#2b2117; --ink-soft:#6b5b3a; --bg:#ffffff; --panel:#fffdf8;
+    --line:#ece2c8; --green:#2e7d32; --red:#c62828;
+    --radius:14px; --shadow:0 4px 24px rgba(139,101,8,.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Inter,system-ui,-apple-system,sans-serif;
+    font-variant-numeric:tabular-nums;}
+  table, .kpi .val, .badge, #kpi-band, canvas{font-variant-numeric:tabular-nums;}
+  a{color:var(--gold-dark);}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;color:var(--ink);margin:0 0 .3em;}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+  header.hero{
+    background:linear-gradient(135deg,#fffdf5 0%,#fff 60%);
+    border-bottom:1px solid var(--line);
+    padding:56px 0 40px;
+  }
+  header.hero .eyebrow{
+    display:inline-block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold-dark);font-weight:700;margin-bottom:14px;
+    border:1px solid var(--gold-light);background:var(--gold-light);
+    padding:5px 12px;border-radius:999px;
+  }
+  header.hero h1{font-size:2.5rem;line-height:1.15;max-width:780px;}
+  header.hero p.lead{font-size:1.08rem;color:var(--ink-soft);max-width:680px;line-height:1.6;}
+  nav.tabs{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);z-index:50;overflow-x:auto;white-space:nowrap;}
+  nav.tabs .container{display:flex;gap:4px;padding:0 24px;}
+  nav.tabs a{display:inline-block;padding:14px 14px;font-size:.86rem;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;border-bottom:3px solid transparent;}
+  nav.tabs a.active,nav.tabs a:hover{color:var(--gold-dark);border-bottom-color:var(--gold);}
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  section h2{font-size:1.65rem;}
+  section .section-sub{color:var(--ink-soft);max-width:760px;margin-bottom:28px;font-size:.98rem;}
+  .kpi-band{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:28px 0 0;}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 20px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;
+    transition:transform .15s ease, box-shadow .15s ease;}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,101,8,.14);}
+  .kpi .icon{font-size:1.4rem;line-height:1;}
+  .kpi .val{font-family:"Segoe UI",Inter,system-ui,sans-serif;font-size:1.4rem;font-weight:800;
+    color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1.2;}
+  .kpi .lbl{font-size:.78rem;font-weight:600;color:var(--gold-dark);text-transform:uppercase;
+    letter-spacing:.03em;line-height:1.35;}
+  .kpi .src{font-size:.7rem;color:#a9987a;margin-top:auto;padding-top:6px;border-top:1px dashed var(--line);}
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;}
+  .grid-2 .panel, .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow);}
+  @media (max-width:860px){.grid-2{grid-template-columns:1fr;}}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);}
+  th{color:var(--ink-soft);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;
+    cursor:pointer;user-select:none;}
+  th:hover{color:var(--gold-dark);}
+  tbody tr:hover{background:#fffaf0;}
+  .bar-cell{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--gold),#d9a441);}
+  .search-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+  input[type=search]{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;min-width:200px;}
+  select{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;background:#fff;color:var(--ink);min-width:220px;}
+  button.btn{background:var(--gold);color:#fff;border:none;padding:8px 14px;border-radius:8px;
+    font-size:.82rem;font-weight:600;cursor:pointer;}
+  button.btn:hover{background:var(--gold-dark);}
+  .badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .badge.up{background:#e7f4e8;color:var(--green);}
+  .badge.down{background:#fbeaea;color:var(--red);}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:.8rem;color:var(--ink-soft);}
+  .legend span.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;}
+  #map-wrap{position:relative;}
+  #map-controls{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px;}
+  #map-controls button{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;font-size:1rem;}
+  .map-legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.78rem;color:var(--ink-soft);}
+  .gradient-bar{height:10px;width:180px;border-radius:6px;
+    background:linear-gradient(90deg,#f4e4bc,#b8860b,#5a4004);}
+  .quote-card{border-left:4px solid var(--gold);background:#fffaf0;padding:16px 20px;border-radius:0 10px 10px 0;
+    font-size:.95rem;color:var(--ink-soft);}
+  footer{padding:36px 0 60px;}
+  .maker-card{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px 20px;max-width:560px;box-shadow:var(--shadow);}
+  .maker-card img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-light);}
+  .maker-card .name{font-weight:700;color:var(--ink);}
+  .maker-card .bio{font-size:.82rem;color:var(--ink-soft);}
+  .maker-card a{font-size:.82rem;font-weight:600;}
+  .footer-note{font-size:.78rem;color:#a9987a;margin-top:26px;}
+  .chart-box{position:relative;height:320px;}
+  .chart-box.tall{height:380px;}
+  .sources-table td{font-size:.82rem;}
+  .flag{font-size:1.05rem;margin-right:6px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <span class="eyebrow">2026 Edition · World Gold Council · IMF IFS · USGS — real data, source-cited</span>
+    <h1>Global Gold Market Pulse</h1>
+    <p class="lead">Which country actually holds the most gold — and who's been buying? A world-level look at
+      official reserves, mine production, 26 years of reserve history, and 2025's record demand, built entirely
+      on primary World Gold Council / IMF IFS extracts and USGS data.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="container" id="tab-nav">
+    <a href="#overview" class="active">Overview</a>
+    <a href="#reserves">Reserves by Country</a>
+    <a href="#regions">Regions</a>
+    <a href="#allocation">Gold Allocation</a>
+    <a href="#explorer">Country Explorer</a>
+    <a href="#history">Reserve History</a>
+    <a href="#cbga">CBGA Era</a>
+    <a href="#momentum">Momentum</a>
+    <a href="#buyers">Buyers &amp; Sellers</a>
+    <a href="#value">Reserve Value</a>
+    <a href="#production">Production</a>
+    <a href="#price">Price</a>
+    <a href="#demand">Demand &amp; Supply</a>
+    <a href="#forecast">Outlook</a>
+    <a href="#sources">Sources</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section id="overview">
+    <h2>At a glance</h2>
+    <p class="section-sub">Headline figures across the whole dataset — every number below traces to a cited
+      source in the Sources section.</p>
+    <div class="kpi-band" id="kpi-band"></div>
+  </section>
+
+  <section id="reserves">
+    <h2>Which country holds the most gold?</h2>
+    <p class="section-sub" id="reserves-sub"></p>
+    <div class="panel" id="map-wrap">
+      <div class="search-row" style="margin-bottom:8px;">
+        <button class="btn layer-btn active" data-layer="reserves">Reserves</button>
+        <button class="btn layer-btn" data-layer="production" style="background:#a9987a;">Production</button>
+      </div>
+      <div id="world-map"></div>
+      <div id="map-controls">
+        <button id="zoom-in">+</button>
+        <button id="zoom-out">−</button>
+        <button id="zoom-reset">⤾</button>
+      </div>
+      <div class="map-legend">
+        <span id="map-legend-lo">Fewer reserves</span><div class="gradient-bar"></div><span id="map-legend-hi">More reserves</span>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Top 10 by tonnes</h3>
+        <canvas id="top10-chart"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Top 10 by share of world reserves</h3>
+        <canvas id="top10-share-chart"></canvas>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <div class="search-row">
+        <input type="search" id="reserve-search" placeholder="Search country…" />
+        <button class="btn" id="export-csv">Export CSV</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="reserve-table">
+          <thead>
+            <tr>
+              <th data-key="rank">Rank</th>
+              <th data-key="country">Country</th>
+              <th data-key="tonnes">Tonnes</th>
+              <th data-key="pctWorld">% of world</th>
+              <th data-key="pctFx">% of FX reserves</th>
+              <th data-key="asOf">As of</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="regions">
+    <h2>Reserves by region</h2>
+    <p class="section-sub" id="regions-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box"><canvas id="region-pie"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Institutional &amp; supranational holders</h3>
+        <p class="section-sub" style="margin-bottom:14px;">Held by international institutions, not attributable to a single country.</p>
+        <div class="chart-box"><canvas id="institutional-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="allocation">
+    <h2>De-dollarization leaderboard: gold as % of reserves</h2>
+    <p class="section-sub">Ranking countries not by tonnes, but by how much of their own foreign-exchange
+      reserves they choose to hold in gold rather than currency or bonds.</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="allocation-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Bloc comparison</h3>
+        <p class="section-sub" style="margin-bottom:14px;">The Euro Area, taken as a single bloc, holds more gold than any individual country.</p>
+        <div class="chart-box"><canvas id="euroarea-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="explorer">
+    <h2>Country explorer</h2>
+    <p class="section-sub">Pick any of the 29 countries in the dataset for a full snapshot.</p>
+    <div class="card">
+      <div class="search-row">
+        <select id="explorer-select"></select>
+      </div>
+      <div id="explorer-detail" class="kpi-band"></div>
+      <div class="chart-box" id="explorer-chart-wrap" style="margin-top:16px; display:none;"><canvas id="explorer-chart"></canvas></div>
+    </div>
+  </section>
+
+  <section id="history">
+    <h2>26 years of reserve history: sellers → buyers</h2>
+    <p class="section-sub">From 2000-2008, European central banks were coordinated net sellers under the
+      Central Bank Gold Agreement. Since 2009, the trend has reversed almost every single year.</p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="world-trend-chart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <h3 style="font-size:1.05rem;">Selected countries, 2000 – Q2 2026</h3>
+      <div class="chart-box tall"><canvas id="country-history-chart"></canvas></div>
+      <div id="history-notes" style="margin-top:14px; display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </section>
+
+  <section id="cbga">
+    <h2>The selling era: Central Bank Gold Agreements, 1999–2019</h2>
+    <p class="section-sub" id="cbga-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Reported gross sales by agreement year</h3>
+        <div class="chart-box"><canvas id="cbga-annual-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Top sellers under CBGA1 (1999–2004)</h3>
+        <div class="chart-box"><canvas id="cbga-country-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="momentum">
+    <h2>10-year momentum: who's rising, who's flat</h2>
+    <p class="section-sub">% change in official reserves over roughly the last decade (exact base year varies
+      slightly by country depending on data availability — see table for the precise years compared).</p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="momentum-chart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:20px; overflow-x:auto;">
+      <table id="momentum-table">
+        <thead><tr><th>Country</th><th>Base year</th><th>Base tonnes</th><th>Latest year</th><th>Latest tonnes</th><th>% change</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="buyers">
+    <h2>Who's actually buying gold right now?</h2>
+    <p class="section-sub" id="buyers-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Top cumulative buyers, 2023 – 2025</h3>
+        <div class="chart-box"><canvas id="buyers-3yr-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">2025: buyers vs sellers</h3>
+        <div class="chart-box"><canvas id="buyers-sellers-chart"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <h3 style="font-size:1.05rem;">Case study: Poland's reserve build</h3>
+      <div class="grid-2">
+        <div class="chart-box"><canvas id="poland-chart"></canvas></div>
+        <div class="quote-card" id="poland-note"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="value">
+    <h2>Reserve value: how much is all this gold worth?</h2>
+    <p class="section-sub" id="value-sub"></p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="value-chart"></canvas></div>
+    </div>
+  </section>
+
+  <section id="production">
+    <h2>Where is gold actually mined?</h2>
+    <p class="section-sub" id="production-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="production-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="chart-box tall"><canvas id="production-pie"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="price">
+    <h2>🌐 Global gold price — world market, USD per troy ounce</h2>
+    <p class="section-sub" id="price-sub"></p>
+    <div class="card"><div class="chart-box tall"><canvas id="price-chart"></canvas></div></div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Year-on-year change</h3>
+        <div class="chart-box"><canvas id="price-yoy-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Price vs central-bank buying</h3>
+        <div class="chart-box"><canvas id="price-cb-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demand">
+    <h2>Record demand: who's buying, and why</h2>
+    <p class="section-sub" id="demand-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="demand-pie"></canvas></div>
+        <div class="legend" id="demand-legend"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Supply side, FY2025</h3>
+        <div class="chart-box"><canvas id="supply-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="forecast">
+    <h2>Outlook: 2026 – 2030</h2>
+    <p class="section-sub" id="forecast-sub"></p>
+    <div class="card"><div class="chart-box tall"><canvas id="forecast-chart"></canvas></div></div>
+    <div class="quote-card" style="margin-top:16px;" id="forecast-note"></div>
+  </section>
+
+  <section id="sources">
+    <h2>Sources &amp; methodology</h2>
+    <p class="section-sub">This dashboard mixes a primary dataset (real World Gold Council / IMF IFS reserve
+      files, supplied directly by the project author) with cited secondary data for production, price and
+      demand. Nothing here is simulated.</p>
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="font-size:1.05rem;">Glossary of abbreviations</h3>
+      <div id="glossary" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px 20px; font-size:.85rem; margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <table class="sources-table" id="sources-table">
+        <thead><tr><th>Topic</th><th>As of</th><th>Citation</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="container">
+  <div class="maker-card">
+    <img src="assets/avatar.jpg" alt="Milad Shabani" onerror="this.style.display='none'" />
+    <div>
+      <div class="name">I built this — Milad Shabani</div>
+      <div class="bio">BI Engineer — Power BI · DAX · SQL Server · Python</div>
+      <a href="https://miladshabani.ir" target="_blank" rel="noopener">miladshabani.ir</a>
+    </div>
+  </div>
+  <p class="footer-note" id="footer-note"></p>
+</footer>
+
+<script src="data/gold_data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
