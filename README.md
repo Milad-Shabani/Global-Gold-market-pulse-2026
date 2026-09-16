@@ -140,11 +140,6 @@ auditable and reproducible from a fresh download. Production, price and demand f
 data, cited inline in `scripts/gold_data.py` and on the dashboard's Sources tab. The `Forecast` /
 `Outlook` sections are an explicit, transparent trend-extrapolation model — not a market prediction.
 
-## 👤 Author
-
-**Milad Shabani** — BI Engineer (Power BI · DAX · SQL Server · SSIS/SSAS · Python)
-[miladshabani.ir](https://miladshabani.ir)
-
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE).
