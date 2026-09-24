@@ -110,7 +110,7 @@ global-gold-market-pulse-2026/
 │   ├── make_preview.py       # composes the README preview PNG from real data
 │   └── preview.png
 ├── requirements.txt
-├── publish.sh / publish.bat  # one-command GitHub publish scripts
+├── publish.sh                # one-command GitHub publish script
 └── .github/workflows/        # CI validation + GitHub Pages deploy
 ```
 
