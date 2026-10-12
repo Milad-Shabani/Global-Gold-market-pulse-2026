@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>نبض بازار جهانی طلا ۲۰۲۶ — ذخایر، تولید و تقاضای جهان</title>
+<meta name="description" content="نسخهٔ ۲۰۲۶. کدام کشور بیشترین طلا را دارد؟ داشبورد تعاملی و دارای منبع دربارهٔ ذخایر رسمی طلای جهان، تولید، تاریخچهٔ قیمت و تقاضا؛ ساخته‌شده بر پایهٔ داده‌های واقعی شورای جهانی طلا / IMF IFS و USGS." />
+<meta property="og:title" content="نبض بازار جهانی طلا — نسخهٔ ۲۰۲۶" />
+<meta property="og:description" content="نسخهٔ ۲۰۲۶ — داشبورد تعاملی ذخایر، تولید و تقاضای طلای جهان با داده‌های واقعی WGC/IMF IFS و USGS." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="fa_IR" />
+<link rel="alternate" hreflang="fa" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/fa/" />
+<link rel="alternate" hreflang="en" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/" />
+<link rel="alternate" hreflang="x-default" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/" />
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vazirmatn@33/Vazirmatn-font-face.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+  :root{
+    --gold:#b8860b; --gold-dark:#8b6508; --gold-light:#f4e4bc;
+    --ink:#2b2117; --ink-soft:#6b5b3a; --bg:#ffffff; --panel:#fffdf8;
+    --line:#ece2c8; --green:#2e7d32; --red:#c62828;
+    --radius:14px; --shadow:0 4px 24px rgba(139,101,8,.08);
+    --font-fa:"Vazirmatn",Tahoma,"Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  /* Persian script must never be letter-spaced or upper-cased (it breaks letter joining). */
+  *{letter-spacing:0 !important;text-transform:none !important;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:var(--font-fa);line-height:1.7;
+    font-variant-numeric:tabular-nums;}
+  table, .kpi .val, .badge, #kpi-band, canvas{font-variant-numeric:tabular-nums;}
+  button,input,select{font-family:inherit;}
+  a{color:var(--gold-dark);}
+  h1,h2,h3{font-family:var(--font-fa);font-weight:800;color:var(--ink);margin:0 0 .3em;line-height:1.4;}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+  header.hero{
+    background:linear-gradient(225deg,#fffdf5 0%,#fff 60%);
+    border-bottom:1px solid var(--line);
+    padding:56px 0 40px;
+  }
+  .lang-row{display:flex;justify-content:flex-end;margin:-30px 0 14px;}
+  .lang-switch{display:inline-block;border:1px solid var(--line);background:#fff;color:var(--gold-dark);
+    padding:5px 14px;border-radius:999px;font-size:.82rem;font-weight:700;text-decoration:none;}
+  .lang-switch:hover{background:var(--gold-light);}
+  header.hero .eyebrow{
+    display:inline-block;font-size:.8rem;
+    color:var(--gold-dark);font-weight:700;margin-bottom:14px;
+    border:1px solid var(--gold-light);background:var(--gold-light);
+    padding:5px 12px;border-radius:999px;
+  }
+  header.hero h1{font-size:2.4rem;line-height:1.35;max-width:780px;}
+  header.hero p.lead{font-size:1.05rem;color:var(--ink-soft);max-width:700px;line-height:1.95;}
+  nav.tabs{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);z-index:50;overflow-x:auto;white-space:nowrap;}
+  nav.tabs .container{display:flex;gap:4px;padding:0 24px;}
+  nav.tabs a{display:inline-block;padding:14px 14px;font-size:.88rem;font-weight:600;
+    color:var(--ink-soft);text-decoration:none;border-bottom:3px solid transparent;}
+  nav.tabs a.active,nav.tabs a:hover{color:var(--gold-dark);border-bottom-color:var(--gold);}
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  section h2{font-size:1.6rem;}
+  section .section-sub{color:var(--ink-soft);max-width:780px;margin-bottom:28px;font-size:.98rem;line-height:1.95;}
+  .kpi-band{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:28px 0 0;}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 20px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;
+    transition:transform .15s ease, box-shadow .15s ease;}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,101,8,.14);}
+  .kpi .icon{font-size:1.4rem;line-height:1;}
+  .kpi .val{font-family:var(--font-fa);font-size:1.4rem;font-weight:800;
+    color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.3;}
+  .kpi .lbl{font-size:.82rem;font-weight:600;color:var(--gold-dark);line-height:1.6;}
+  .kpi .src{font-size:.72rem;color:#a9987a;margin-top:auto;padding-top:6px;border-top:1px dashed var(--line);}
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;}
+  .grid-2 .panel, .card, .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow);}
+  @media (max-width:860px){.grid-2{grid-template-columns:1fr;}}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);}
+  th{color:var(--ink-soft);font-weight:700;font-size:.8rem;
+    cursor:pointer;user-select:none;}
+  th:hover{color:var(--gold-dark);}
+  tbody tr:hover{background:#fffaf0;}
+  .bar-cell{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--gold),#d9a441);}
+  .search-row{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+  input[type=search]{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;min-width:200px;}
+  select{padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;background:#fff;color:var(--ink);min-width:220px;}
+  button.btn{background:var(--gold);color:#fff;border:none;padding:8px 14px;border-radius:8px;
+    font-size:.84rem;font-weight:600;cursor:pointer;}
+  button.btn:hover{background:var(--gold-dark);}
+  .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;}
+  .badge.up{background:#e7f4e8;color:var(--green);}
+  .badge.down{background:#fbeaea;color:var(--red);}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:.82rem;color:var(--ink-soft);}
+  .legend span.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:middle;}
+  #map-wrap{position:relative;}
+  #world-map{direction:ltr;}
+  #map-controls{position:absolute;top:8px;inset-inline-end:8px;display:flex;flex-direction:column;gap:4px;direction:ltr;}
+  #map-controls button{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;font-size:1rem;}
+  /* keep the light→dark gradient aligned with its low/high labels */
+  .map-legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.8rem;color:var(--ink-soft);direction:ltr;}
+  .gradient-bar{height:10px;width:180px;border-radius:6px;
+    background:linear-gradient(90deg,#f4e4bc,#b8860b,#5a4004);}
+  .quote-card{border-right:4px solid var(--gold);background:#fffaf0;padding:16px 20px;border-radius:10px 0 0 10px;
+    font-size:.95rem;color:var(--ink-soft);line-height:1.95;}
+  footer{padding:36px 0 60px;}
+  .maker-card{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:16px 20px;max-width:560px;box-shadow:var(--shadow);}
+  .maker-card img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-light);}
+  .maker-card .name{font-weight:700;color:var(--ink);}
+  .maker-card .bio{font-size:.84rem;color:var(--ink-soft);}
+  .maker-card a{font-size:.84rem;font-weight:600;}
+  .footer-note{font-size:.8rem;color:#a9987a;margin-top:26px;}
+  /* charts always render left-to-right (time axes, numeric axes); Persian labels still shape correctly */
+  canvas, .chart-box{direction:ltr;}
+  .chart-box{position:relative;height:320px;}
+  .chart-box.tall{height:380px;}
+  .sources-table td{font-size:.84rem;}
+  .flag{font-size:1.05rem;margin-inline-end:6px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="lang-row"><a class="lang-switch" href="../" hreflang="en" lang="en">English</a></div>
+    <span class="eyebrow">نسخهٔ ۲۰۲۶ · شورای جهانی طلا · IMF IFS · USGS — داده‌های واقعی، همراه با منبع</span>
+    <h1>نبض بازار جهانی طلا</h1>
+    <p class="lead">کدام کشور واقعاً بیشترین طلا را دارد — و چه کسانی در حال خرید هستند؟ نگاهی جهانی به
+      ذخایر رسمی، تولید معدنی، ۲۶ سال تاریخچهٔ ذخایر و تقاضای رکوردی سال ۲۰۲۵؛ ساخته‌شده کاملاً بر پایهٔ
+      داده‌های اولیهٔ شورای جهانی طلا / IMF IFS و داده‌های USGS.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="container" id="tab-nav">
+    <a href="#overview" class="active">نمای کلی</a>
+    <a href="#reserves">ذخایر به تفکیک کشور</a>
+    <a href="#regions">مناطق</a>
+    <a href="#allocation">سهم طلا در ذخایر</a>
+    <a href="#explorer">کاوشگر کشورها</a>
+    <a href="#history">تاریخچهٔ ذخایر</a>
+    <a href="#cbga">دوران CBGA</a>
+    <a href="#momentum">شتاب ده‌ساله</a>
+    <a href="#buyers">خریداران و فروشندگان</a>
+    <a href="#value">ارزش ذخایر</a>
+    <a href="#production">تولید</a>
+    <a href="#price">قیمت</a>
+    <a href="#demand">تقاضا و عرضه</a>
+    <a href="#forecast">چشم‌انداز</a>
+    <a href="#sources">منابع</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section id="overview">
+    <h2>در یک نگاه</h2>
+    <p class="section-sub">شاخص‌های کلیدی کل مجموعه‌داده — هر عددی که در ادامه می‌بینید به یک منبعِ ذکرشده
+      در بخش «منابع» برمی‌گردد.</p>
+    <div class="kpi-band" id="kpi-band"></div>
+  </section>
+
+  <section id="reserves">
+    <h2>کدام کشور بیشترین طلا را دارد؟</h2>
+    <p class="section-sub" id="reserves-sub"></p>
+    <div class="panel" id="map-wrap">
+      <div class="search-row" style="margin-bottom:8px;">
+        <button class="btn layer-btn active" data-layer="reserves">ذخایر</button>
+        <button class="btn layer-btn" data-layer="production" style="background:#a9987a;">تولید</button>
+      </div>
+      <div id="world-map"></div>
+      <div id="map-controls">
+        <button id="zoom-in">+</button>
+        <button id="zoom-out">−</button>
+        <button id="zoom-reset">⤾</button>
+      </div>
+      <div class="map-legend">
+        <span id="map-legend-lo">ذخایر کمتر</span><div class="gradient-bar"></div><span id="map-legend-hi">ذخایر بیشتر</span>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">۱۰ کشور برتر بر حسب تن</h3>
+        <canvas id="top10-chart"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">۱۰ کشور برتر بر اساس سهم از ذخایر جهان</h3>
+        <canvas id="top10-share-chart"></canvas>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <div class="search-row">
+        <input type="search" id="reserve-search" placeholder="جستجوی کشور…" />
+        <button class="btn" id="export-csv">خروجی CSV</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="reserve-table">
+          <thead>
+            <tr>
+              <th data-key="rank">رتبه</th>
+              <th data-key="country">کشور</th>
+              <th data-key="tonnes">تن</th>
+              <th data-key="pctWorld">٪ از کل جهان</th>
+              <th data-key="pctFx">٪ از ذخایر ارزی</th>
+              <th data-key="asOf">تاریخ داده</th>
+              <th>سهم</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="regions">
+    <h2>ذخایر به تفکیک منطقه</h2>
+    <p class="section-sub" id="regions-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box"><canvas id="region-pie"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">نهادها و دارندگان فراملی</h3>
+        <p class="section-sub" style="margin-bottom:14px;">طلای نگهداری‌شده توسط نهادهای بین‌المللی که به یک کشور مشخص قابل انتساب نیست.</p>
+        <div class="chart-box"><canvas id="institutional-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="allocation">
+    <h2>جدول دلارزدایی: طلا به‌عنوان درصدی از ذخایر</h2>
+    <p class="section-sub">رتبه‌بندی کشورها نه بر اساس تن، بلکه بر اساس اینکه چه سهمی از ذخایر ارزی خود را
+      به‌جای ارز یا اوراق قرضه، به طلا اختصاص داده‌اند.</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="allocation-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">مقایسهٔ بلوک‌ها</h3>
+        <p class="section-sub" style="margin-bottom:14px;">منطقهٔ یورو، اگر یک بلوک واحد حساب شود، بیش از هر کشور منفردی طلا دارد.</p>
+        <div class="chart-box"><canvas id="euroarea-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="explorer">
+    <h2>کاوشگر کشورها</h2>
+    <p class="section-sub">هر یک از ۲۹ کشور موجود در مجموعه‌داده را انتخاب کنید تا تصویر کاملی از آن ببینید.</p>
+    <div class="card">
+      <div class="search-row">
+        <select id="explorer-select"></select>
+      </div>
+      <div id="explorer-detail" class="kpi-band"></div>
+      <div class="chart-box" id="explorer-chart-wrap" style="margin-top:16px; display:none;"><canvas id="explorer-chart"></canvas></div>
+    </div>
+  </section>
+
+  <section id="history">
+    <h2>۲۶ سال تاریخچهٔ ذخایر: از فروشندگی تا خریداری</h2>
+    <p class="section-sub">از سال ۲۰۰۰ تا ۲۰۰۸، بانک‌های مرکزی اروپا بر اساس توافق‌نامهٔ طلای بانک‌های مرکزی
+      (CBGA) به‌صورت هماهنگ فروشندهٔ خالص بودند. از ۲۰۰۹ به بعد، این روند تقریباً در هر سال معکوس شده است.</p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="world-trend-chart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <h3 style="font-size:1.05rem;">کشورهای منتخب، ۲۰۰۰ تا فصل دوم ۲۰۲۶</h3>
+      <div class="chart-box tall"><canvas id="country-history-chart"></canvas></div>
+      <div id="history-notes" style="margin-top:14px; display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </section>
+
+  <section id="cbga">
+    <h2>دوران فروش: توافق‌نامه‌های طلای بانک‌های مرکزی، ۱۹۹۹ تا ۲۰۱۹</h2>
+    <p class="section-sub" id="cbga-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">فروش ناخالصِ گزارش‌شده به تفکیک سال توافق</h3>
+        <div class="chart-box"><canvas id="cbga-annual-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">بزرگ‌ترین فروشندگان در CBGA1 (۱۹۹۹ تا ۲۰۰۴)</h3>
+        <div class="chart-box"><canvas id="cbga-country-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="momentum">
+    <h2>شتاب ده‌ساله: چه کسی صعود می‌کند و چه کسی ثابت مانده</h2>
+    <p class="section-sub">درصد تغییر ذخایر رسمی طی حدود یک دهه (سال مبنا بسته به دردسترس‌بودن داده برای هر
+      کشور اندکی متفاوت است — سال‌های دقیق مقایسه را در جدول ببینید).</p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="momentum-chart"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:20px; overflow-x:auto;">
+      <table id="momentum-table">
+        <thead><tr><th>کشور</th><th>سال مبنا</th><th>تن در سال مبنا</th><th>آخرین سال</th><th>تن در آخرین سال</th><th>٪ تغییر</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="buyers">
+    <h2>اکنون چه کسانی واقعاً طلا می‌خرند؟</h2>
+    <p class="section-sub" id="buyers-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">بزرگ‌ترین خریداران تجمعی، ۲۰۲۳ تا ۲۰۲۵</h3>
+        <div class="chart-box"><canvas id="buyers-3yr-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">۲۰۲۵: خریداران در برابر فروشندگان</h3>
+        <div class="chart-box"><canvas id="buyers-sellers-chart"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <h3 style="font-size:1.05rem;">مطالعهٔ موردی: انباشت ذخایر لهستان</h3>
+      <div class="grid-2">
+        <div class="chart-box"><canvas id="poland-chart"></canvas></div>
+        <div class="quote-card" id="poland-note"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="value">
+    <h2>ارزش ذخایر: کل این طلا چقدر می‌ارزد؟</h2>
+    <p class="section-sub" id="value-sub"></p>
+    <div class="card">
+      <div class="chart-box tall"><canvas id="value-chart"></canvas></div>
+    </div>
+  </section>
+
+  <section id="production">
+    <h2>طلا واقعاً کجا استخراج می‌شود؟</h2>
+    <p class="section-sub" id="production-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="production-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="chart-box tall"><canvas id="production-pie"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="price">
+    <h2>🌐 قیمت جهانی طلا — بازار جهانی، دلار آمریکا به ازای هر اونس تروی</h2>
+    <p class="section-sub" id="price-sub"></p>
+    <div class="card"><div class="chart-box tall"><canvas id="price-chart"></canvas></div></div>
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">تغییر سال‌به‌سال</h3>
+        <div class="chart-box"><canvas id="price-yoy-chart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">قیمت در برابر خرید بانک‌های مرکزی</h3>
+        <div class="chart-box"><canvas id="price-cb-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demand">
+    <h2>تقاضای رکوردی: چه کسانی می‌خرند و چرا</h2>
+    <p class="section-sub" id="demand-sub"></p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-box tall"><canvas id="demand-pie"></canvas></div>
+        <div class="legend" id="demand-legend"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:1.05rem;">سمت عرضه، ۲۰۲۵</h3>
+        <div class="chart-box"><canvas id="supply-chart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="forecast">
+    <h2>چشم‌انداز: ۲۰۲۶ تا ۲۰۳۰</h2>
+    <p class="section-sub" id="forecast-sub"></p>
+    <div class="card"><div class="chart-box tall"><canvas id="forecast-chart"></canvas></div></div>
+    <div class="quote-card" style="margin-top:16px;" id="forecast-note"></div>
+  </section>
+
+  <section id="sources">
+    <h2>منابع و روش‌شناسی</h2>
+    <p class="section-sub">این داشبورد ترکیبی است از یک مجموعه‌دادهٔ اولیه (فایل‌های واقعی ذخایر شورای جهانی
+      طلا / IMF IFS که مستقیماً توسط سازندهٔ پروژه تهیه شده) و داده‌های ثانویهٔ دارای ارجاع برای تولید، قیمت و
+      تقاضا. هیچ‌چیز در اینجا شبیه‌سازی‌شده نیست.</p>
+    <div class="card" style="margin-bottom:20px;">
+      <h3 style="font-size:1.05rem;">واژه‌نامهٔ اختصارات</h3>
+      <div id="glossary" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px 20px; font-size:.88rem; margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <table class="sources-table" id="sources-table">
+        <thead><tr><th>موضوع</th><th>تاریخ داده</th><th>منبع</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="container">
+  <div class="maker-card">
+    <img src="../assets/avatar.jpg" alt="میلاد شعبانی" onerror="this.style.display='none'" />
+    <div>
+      <div class="name">این را من ساختم — میلاد شعبانی</div>
+      <div class="bio">مهندس BI — Power BI · DAX · SQL Server · Python</div>
+      <a href="https://miladshabani.ir" target="_blank" rel="noopener">miladshabani.ir</a>
+    </div>
+  </div>
+  <p class="footer-note" id="footer-note"></p>
+</footer>
+
+<script>
+  /* Persian typography + RTL-friendly tooltips/legends for every Chart.js chart on this page. */
+  if (window.Chart) {
+    Chart.defaults.font.family = '"Vazirmatn", Tahoma, "Segoe UI", sans-serif';
+    Chart.defaults.plugins.tooltip.rtl = true;
+    Chart.defaults.plugins.tooltip.textDirection = 'rtl';
+    Chart.defaults.plugins.legend.rtl = true;
+    Chart.defaults.plugins.legend.textDirection = 'rtl';
+  }
+</script>
+<script src="../data/gold_data.js"></script>
+<!-- Texts generated by the script (KPI tiles, chart labels, notes, glossary, sources) are still English
+     until a Persian copy of app.js exists. Once fa/app.fa.js is added, replace the next line with:
+     <script src="app.fa.js"></script> -->
+<script src="../app.js"></script>
+</body>
+</html>

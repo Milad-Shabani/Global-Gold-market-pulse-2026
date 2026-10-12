@@ -8,6 +8,9 @@
 <meta property="og:title" content="Global Gold Market Pulse — 2026 Edition" />
 <meta property="og:description" content="2026 edition — interactive world gold reserves, production &amp; demand dashboard, real WGC/IMF IFS &amp; USGS data." />
 <meta property="og:type" content="website" />
+<link rel="alternate" hreflang="en" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/" />
+<link rel="alternate" hreflang="fa" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/fa/" />
+<link rel="alternate" hreflang="x-default" href="https://milad-shabani.github.io/Global-Gold-market-pulse-2026/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
@@ -32,6 +35,10 @@
     border-bottom:1px solid var(--line);
     padding:56px 0 40px;
   }
+  .lang-row{display:flex;justify-content:flex-end;margin:-30px 0 14px;}
+  .lang-switch{display:inline-block;border:1px solid var(--line);background:#fff;color:var(--gold-dark);
+    padding:5px 14px;border-radius:999px;font-size:.82rem;font-weight:700;text-decoration:none;}
+  .lang-switch:hover{background:var(--gold-light);}
   header.hero .eyebrow{
     display:inline-block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
     color:var(--gold-dark);font-weight:700;margin-bottom:14px;
@@ -110,6 +117,7 @@
 
 <header class="hero">
   <div class="container">
+    <div class="lang-row"><a class="lang-switch" href="fa/" hreflang="fa" lang="fa">فارسی</a></div>
     <span class="eyebrow">2026 Edition · World Gold Council · IMF IFS · USGS — real data, source-cited</span>
     <h1>Global Gold Market Pulse</h1>
     <p class="lead">Which country actually holds the most gold — and who's been buying? A world-level look at
